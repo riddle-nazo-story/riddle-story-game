@@ -362,23 +362,23 @@
        RIDDLE STORY 2026/08/19 正解者専用ページ
 
        発行側では必ず次の gameId を使用してください。
-       gameId: 20260819-winner
+       gameId: 20260819
 
        発行URL:
-       https://game.riddlestory.jp/20260819/winner/?token=rs_xxxxx
+       https://game.riddlestory.jp/20260819/?token=rs_xxxxx
 
        既存の「RIDDLE STORY ゲーム認証API v2」をそのまま使用します。
        unused のtokenは、最初のアクセス時にこの端末へ固定されます。
     ========================================================= */
 
     const TOKEN_API_URL = "https://script.google.com/macros/s/AKfycbxQlmn_aMq-6ny0Io4iGbBHFXcU6vRxYt6BGk9MeLbZjppsqWlujis-bMdFRXciMZtt/exec";
-    const GAME_ID = "20260819-winner";
+    const GAME_ID = "20260819";
 
     // 他のRIDDLE STORYゲームでも利用している端末IDキーに合わせています。
     const DEVICE_KEY = "riddle_story_device_id_v1";
 
     // この正解者ページ専用のtoken保存キー。
-    const TOKEN_KEY = "riddle_story_current_token_20260819_winner";
+    const TOKEN_KEY = "riddle_story_current_token_20260819";
 
     const authScreen = document.getElementById("authScreen");
     const authTitle = document.getElementById("authTitle");
