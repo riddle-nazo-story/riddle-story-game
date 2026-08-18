@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8fb">
+  <title>正解者専用ページ | RIDDLE STORY</title>
+
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --text:#20242b;
+      --muted:#737a84;
+      --line:#e5e8ed;
+      --accent:#26344a;
+      --gold:#a98645;
+      --danger:#b64747;
+      --success:#35705a;
+    }
+
+    *{box-sizing:border-box;}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(169,134,69,.09), transparent 35%),
+        var(--bg);
+      color:var(--text);
+      font-family:"Helvetica Neue","Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    }
+
+    .hidden{display:none !important;}
+
+    .auth-screen{
+      position:fixed;
+      inset:0;
+      z-index:999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:var(--bg);
+    }
+
+    .auth-card{
+      width:min(100%,520px);
+      padding:34px 28px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:var(--card);
+      box-shadow:0 18px 50px rgba(25,32,44,.08);
+      text-align:center;
+    }
+
+    .auth-mark{
+      width:46px;
+      height:46px;
+      margin:0 auto 20px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--line);
+      border-radius:50%;
+      font-weight:800;
+      color:var(--accent);
+    }
+
+    .auth-title{
+      margin:0 0 10px;
+      font-size:22px;
+      letter-spacing:.04em;
+    }
+
+    .auth-text{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .auth-error{
+      color:var(--danger);
+      font-weight:700;
+    }
+
+    .spinner{
+      width:26px;
+      height:26px;
+      margin:24px auto 0;
+      border:2px solid #e8eaee;
+      border-top-color:var(--accent);
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+    }
+
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .page{
+      width:min(100% - 32px,760px);
+      margin:0 auto;
+      padding:56px 0;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.16em;
+    }
+
+    .verified{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      color:var(--success);
+      letter-spacing:.06em;
+    }
+
+    .verified::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--success);
+    }
+
+    .hero{
+      position:relative;
+      padding:clamp(34px,7vw,64px);
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:var(--card);
+      box-shadow:0 20px 60px rgba(25,32,44,.07);
+    }
+
+    .hero::after{
+      content:"01";
+      position:absolute;
+      right:-8px;
+      bottom:-28px;
+      color:#f3f0e9;
+      font-size:180px;
+      line-height:1;
+      font-weight:900;
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .eyebrow{
+      position:relative;
+      z-index:1;
+      margin:0 0 22px;
+      color:var(--gold);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.24em;
+    }
+
+    h1{
+      position:relative;
+      z-index:1;
+      margin:0;
+      font-size:clamp(38px,8vw,68px);
+      line-height:1.08;
+      letter-spacing:-.045em;
+    }
+
+    .lead{
+      position:relative;
+      z-index:1;
+      max-width:540px;
+      margin:28px 0 0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:2;
+    }
+
+    .lead strong{color:var(--text);}
+
+    .winner-line{
+      position:relative;
+      z-index:1;
+      width:56px;
+      height:2px;
+      margin:30px 0 0;
+      background:var(--gold);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .info-card{
+      padding:24px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--card);
+    }
+
+    .info-label{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.16em;
+    }
+
+    .info-title{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+
+    .info-text{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .expiry-card{
+      margin-top:14px;
+      padding:16px 20px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.72);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.7;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:22px;
+    }
+
+    .button{
+      flex:1 1 220px;
+      min-height:50px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 20px;
+      border-radius:12px;
+      border:1px solid var(--accent);
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:800;
+      transition:.18s ease;
+    }
+
+    .button.secondary{
+      border-color:var(--line);
+      background:#fff;
+      color:var(--text);
+    }
+
+    .button:hover{transform:translateY(-1px);}
+
+    .footnote{
+      margin:22px 4px 0;
+      color:#9298a1;
+      font-size:11px;
+      line-height:1.8;
+      text-align:center;
+    }
+
+    @media(max-width:620px){
+      .page{padding:28px 0 36px;}
+      .grid{grid-template-columns:1fr;}
+      .hero{border-radius:18px;}
+      .hero::after{font-size:125px;bottom:-16px;}
+      .topbar{align-items:flex-start;flex-direction:column;gap:8px;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- token認証が終わるまでは正解者用コンテンツを一切表示しません -->
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-mark">RS</div>
+      <h2 id="authTitle" class="auth-title">ACCESS CHECK</h2>
+      <p id="authMessage" class="auth-text">正解者専用URLを確認しています。</p>
+      <div id="authSpinner" class="spinner"></div>
+    </div>
+  </section>
+
+  <main id="winnerPage" class="page hidden">
+    <div class="topbar">
+      <span>RIDDLE STORY / LIMITED RIDDLE</span>
+      <span class="verified">AUTHORIZED DEVICE</span>
+    </div>
+
+    <section class="hero">
+      <p class="eyebrow">FIRST SOLVER</p>
+      <h1>最初の正解者です。</h1>
+      <div class="winner-line"></div>
+      <p class="lead">
+        おめでとうございます。<br>
+        あなたは今回の謎に<strong>最も早く正解した1名</strong>として認証されました。<br>
+        このページは、正解者専用URLへ最初にアクセスした端末からのみ閲覧できます。
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="info-card">
+        <p class="info-label">LIMITED STAMP</p>
+        <h2 class="info-title">正解者限定スタンプ</h2>
+        <p class="info-text">
+          正解者には、RIDDLE STORY MEMBERで使用できる限定スタンプが付与されます。
+          MEMBERサイトからスタンプ・参加記録をご確認ください。
+        </p>
+      </section>
+
+      <section class="info-card">
+        <p class="info-label">ACCESS SECURITY</p>
+        <h2 class="info-title">この端末だけが有効です</h2>
+        <p class="info-text">
+          URLを他の人へ共有しても、別端末からはこのページを開けません。
+          ブラウザのデータ削除やシークレットモードの利用にはご注意ください。
+        </p>
+      </section>
+    </div>
+
+    <div id="expiryCard" class="expiry-card hidden"></div>
+
+    <div class="actions">
+      <a class="button" href="https://member.riddlestory.jp/" target="_blank" rel="noopener noreferrer">
+        RIDDLE STORY MEMBERへ
+      </a>
+      <a class="button secondary" href="https://riddlestory.jp/" target="_blank" rel="noopener noreferrer">
+        公式サイトへ
+      </a>
+    </div>
+
+    <p class="footnote">
+      このページはRIDDLE STORYの限定企画用ページです。<br>
+      認証情報はこのブラウザ内に保存されます。
+    </p>
+  </main>
+
+  <script>
+    /* =========================================================
+       RIDDLE STORY 2026/08/19 正解者専用ページ
+
+       発行側では必ず次の gameId を使用してください。
+       gameId: 20260819-winner
+
+       発行URL:
+       https://game.riddlestory.jp/20260819/winner/?token=rs_xxxxx
+
+       既存の「RIDDLE STORY ゲーム認証API v2」をそのまま使用します。
+       unused のtokenは、最初のアクセス時にこの端末へ固定されます。
+    ========================================================= */
+
+    const TOKEN_API_URL = "https://script.google.com/macros/s/AKfycbxQlmn_aMq-6ny0Io4iGbBHFXcU6vRxYt6BGk9MeLbZjppsqWlujis-bMdFRXciMZtt/exec";
+    const GAME_ID = "20260819-winner";
+
+    // 他のRIDDLE STORYゲームでも利用している端末IDキーに合わせています。
+    const DEVICE_KEY = "riddle_story_device_id_v1";
+
+    // この正解者ページ専用のtoken保存キー。
+    const TOKEN_KEY = "riddle_story_current_token_20260819_winner";
+
+    const authScreen = document.getElementById("authScreen");
+    const authTitle = document.getElementById("authTitle");
+    const authMessage = document.getElementById("authMessage");
+    const authSpinner = document.getElementById("authSpinner");
+    const winnerPage = document.getElementById("winnerPage");
+    const expiryCard = document.getElementById("expiryCard");
+
+    function getTokenFromUrl(){
+      const params = new URLSearchParams(location.search);
+      return String(params.get("token") || "").trim();
+    }
+
+    function getCurrentToken(){
+      const urlToken = getTokenFromUrl();
+
+      if(urlToken){
+        localStorage.setItem(TOKEN_KEY, urlToken);
+        return urlToken;
+      }
+
+      return localStorage.getItem(TOKEN_KEY) || "";
+    }
+
+    function getOrCreateDeviceId(){
+      let deviceId = localStorage.getItem(DEVICE_KEY);
+
+      if(!deviceId){
+        if(window.crypto && crypto.randomUUID){
+          deviceId = "dev_" + crypto.randomUUID();
+        }else{
+          deviceId = "dev_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+        }
+
+        localStorage.setItem(DEVICE_KEY, deviceId);
+      }
+
+      return deviceId;
+    }
+
+    function verifyWinnerToken(token, deviceId){
+      return new Promise((resolve, reject) => {
+        const callbackName = "winnerAuth_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+        const script = document.createElement("script");
+        let finished = false;
+
+        const cleanup = () => {
+          if(script.parentNode){
+            script.parentNode.removeChild(script);
+          }
+          try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
+        };
+
+        const timeoutId = setTimeout(() => {
+          if(finished) return;
+          finished = true;
+          cleanup();
+          reject(new Error("認証サーバーから応答がありません。時間を置いて再度お試しください。"));
+        }, 12000);
+
+        window[callbackName] = (data) => {
+          if(finished) return;
+          finished = true;
+          clearTimeout(timeoutId);
+          cleanup();
+          resolve(data || {});
+        };
+
+        const url =
+          TOKEN_API_URL +
+          "?callback=" + encodeURIComponent(callbackName) +
+          "&action=verify" +
+          "&token=" + encodeURIComponent(token) +
+          "&gameId=" + encodeURIComponent(GAME_ID) +
+          "&deviceId=" + encodeURIComponent(deviceId);
+
+        script.src = url;
+        script.async = true;
+
+        script.onerror = () => {
+          if(finished) return;
+          finished = true;
+          clearTimeout(timeoutId);
+          cleanup();
+          reject(new Error("認証サーバーとの通信に失敗しました。"));
+        };
+
+        document.body.appendChild(script);
+      });
+    }
+
+    function showDenied(message){
+      authTitle.textContent = "ACCESS DENIED";
+      authMessage.innerHTML = '<span class="auth-error">' + escapeHtml(message) + '</span>';
+      authSpinner.classList.add("hidden");
+      winnerPage.classList.add("hidden");
+    }
+
+    function showAuthorized(result){
+      // URLにtokenを残さない。更新時はlocalStorageのtokenで再認証します。
+      if(getTokenFromUrl()){
+        history.replaceState(null, "", location.pathname + location.hash);
+      }
+
+      if(result.expiresAt){
+        const d = new Date(result.expiresAt);
+        if(!Number.isNaN(d.getTime())){
+          expiryCard.textContent =
+            "この専用URLの有効期限：" +
+            d.toLocaleString("ja-JP", {
+              year:"numeric",
+              month:"2-digit",
+              day:"2-digit",
+              hour:"2-digit",
+              minute:"2-digit"
+            });
+          expiryCard.classList.remove("hidden");
+        }
+      }
+
+      winnerPage.classList.remove("hidden");
+      authScreen.classList.add("hidden");
+      window.RS_WINNER_AUTHORIZED = true;
+    }
+
+    function escapeHtml(value){
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function initWinnerPage(){
+      const token = getCurrentToken();
+
+      if(!token){
+        showDenied("正解者専用URLからアクセスしてください。");
+        return;
+      }
+
+      const deviceId = getOrCreateDeviceId();
+
+      try{
+        const result = await verifyWinnerToken(token, deviceId);
+
+        if(!result.ok){
+          const messages = {
+            TOKEN_NOT_FOUND: "この正解者URLは登録されていません。",
+            GAME_NOT_MATCH: "このURLは正解者専用ページでは使用できません。",
+            DEVICE_MISMATCH: "この正解者URLは、すでに別の端末で使用されています。",
+            TOKEN_EXPIRED: "この正解者URLの有効期限は終了しました。",
+            TOKEN_BLOCKED: "この正解者URLは無効化されています。",
+            TOKEN_USED: "この正解者URLは使用済みです。",
+            TOKEN_CLEARED: "この正解者URLではページを表示できません。"
+          };
+
+          showDenied(messages[result.code] || result.message || "正解者として認証できませんでした。");
+          return;
+        }
+
+        showAuthorized(result);
+      }catch(error){
+        console.error(error);
+        showDenied(error.message || "通信エラーが発生しました。");
+      }
+    }
+
+    initWinnerPage();
+  </script>
+</body>
+</html>
