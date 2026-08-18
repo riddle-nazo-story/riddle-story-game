@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>RIDDLE STORY GAME</title>
+
+  <style>
+    :root{
+      --bg:#f7f8fa;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#111827;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      margin:0;
+      min-height:100%;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:var(--bg);
+      color:var(--text);
+      font-family:
+        "Helvetica Neue",
+        "Yu Gothic",
+        "Hiragino Kaku Gothic ProN",
+        Meiryo,
+        sans-serif;
+    }
+
+    .card{
+      width:min(100%, 680px);
+      padding:56px 48px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 16px 40px rgba(17,24,39,.06);
+      text-align:center;
+    }
+
+    .eyebrow{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.22em;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(38px, 8vw, 64px);
+      line-height:1;
+      letter-spacing:-.03em;
+      font-weight:800;
+    }
+
+    .subtitle{
+      margin:16px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      letter-spacing:.12em;
+    }
+
+    .divider{
+      width:48px;
+      height:1px;
+      margin:30px auto;
+      background:var(--line);
+    }
+
+    .message{
+      margin:0 auto;
+      max-width:500px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.9;
+    }
+
+    .button{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:220px;
+      min-height:50px;
+      margin-top:32px;
+      padding:14px 24px;
+      border-radius:12px;
+      background:var(--accent);
+      color:#fff;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:700;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+
+    .button:hover{
+      opacity:.88;
+      transform:translateY(-1px);
+    }
+
+    .footer{
+      margin-top:28px;
+      color:#a1a1aa;
+      font-size:11px;
+      letter-spacing:.08em;
+    }
+
+    @media (max-width:560px){
+      body{
+        padding:16px;
+      }
+
+      .card{
+        padding:42px 24px;
+        border-radius:16px;
+      }
+
+      .button{
+        width:100%;
+        min-width:0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <p class="eyebrow">RIDDLE STORY</p>
+
+    <h1>GAME</h1>
+    <p class="subtitle">RIDDLE STORY GAME SITE</p>
+
+    <div class="divider"></div>
+
+    <p class="message">
+      RIDDLE STORYのゲームコンテンツ専用サイトです。<br />
+      各ゲームは、案内された専用URLからアクセスしてください。
+    </p>
+
+    <a
+      class="button"
+      href="https://riddlestory.jp/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      公式サイトへ
+    </a>
+
+    <div class="footer">
+      © RIDDLE STORY
+    </div>
+  </main>
+</body>
+</html>
